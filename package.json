@@ -1,0 +1,58 @@
+{
+  "name": "lifeworldjs",
+  "version": "0.1.0",
+  "description": "A Game of Life engine in TypeScript: an unbounded plane of 32 by 32 tiles where every cell keeps its colour, age and heat, Gosper's HashLife for long leaps, rules as Golly writes them (counts, Hensel's letters, MAP) and Golly's History and Super families.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "keywords": [
+    "game-of-life",
+    "cellular-automata",
+    "conway",
+    "hashlife",
+    "golly",
+    "rle",
+    "typescript"
+  ],
+  "author": "David Estévez",
+  "license": "GPL-2.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/destbreso/lifeworldjs.git"
+  },
+  "homepage": "https://github.com/destbreso/lifeworldjs#readme",
+  "bugs": {
+    "url": "https://github.com/destbreso/lifeworldjs/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
