@@ -1,14 +1,6 @@
-/* ══════════════════════════════════════════════════════════
-   sim/pattern/rle: Run Length Encoded (RLE) codec for 2-state
-   cellular-automaton patterns.
-
-   RLE is the canonical interchange format for Life-like patterns
-   (conwaylife.com, Golly). This codec is rule-agnostic: it only
-   moves cells in and out of a dense 0/1 matrix. `rleToPattern`
-   tolerates a full RLE file (leading `#` comment lines and the
-   `x = .., y = .., rule = ..` header are skipped) or a bare body.
-   `patternToRle` is the inverse and round-trips with it.
-   ══════════════════════════════════════════════════════════ */
+// RLE, the format Life patterns are shared in (LifeWiki, Golly): rleToPattern and patternToRle move two-state cells
+// in and out of a dense 0/1 matrix, a file's # lines and header skipped; parseRLE and formatRLE read and write a file
+// with its states, rule and position as Golly writes them.
 
 /**
  * Decode an RLE pattern into a dense 0/1 matrix (rows x cols).
@@ -124,8 +116,8 @@ export interface ParsedRLE {
   comments: string[];
 }
 
-// (Golly's History and Super rules, LifeHistory, B36/S23History, LifeSuper, are their base rule with marks drawn in more
-// states: the odd ones alive, the even ones dead, the history, the marked dead cells and the boundary among them)
+// Golly's History and Super rules, LifeHistory, B36/S23History, LifeSuper, are their base rule with marks drawn in more
+// states: the odd ones alive, the even ones dead, the history, the marked dead cells and the boundary among them
 const MARKED = /(History|Super)$/i;
 
 /** A file's live cells, x across and y down: in a History or Super rule only its odd states, as Golly runs it. */
@@ -143,8 +135,8 @@ export function baseRule(rule: string): string {
 }
 
 /**
- * Whether text is a pattern in RLE rather than something else typed into a box: a header line, or a body of runs alone
- * (as one is often shared, without its header). A program of the Game of Life's Glider ISA never reads as one.
+ * Whether text is a pattern in RLE rather than other text: a header line, or a body of runs alone
+ * (as one is often shared, without its header).
  */
 export function looksLikeRLE(text: string): boolean {
   const lines = text
@@ -189,7 +181,7 @@ export function parseRLE(text: string): ParsedRLE {
     run = "",
     prefix = "";
   for (const ch of body) {
-    // (whitespace inside the body means nothing: read as a cell, it put stray live cells on the board)
+    // whitespace inside the body means nothing: read as a cell, it put stray live cells on the board
     if (ch === " " || ch === "\t") continue;
     if (ch >= "0" && ch <= "9") {
       run += ch;
@@ -199,7 +191,7 @@ export function parseRLE(text: string): ParsedRLE {
     const n = run ? +run : 1;
     run = "";
     if (ch === "p" || ch === "q" || ch === "r" || ch === "s" || ch === "t" || ch === "u" || ch === "v" || ch === "w" || ch === "x" || ch === "y") {
-      // (Golly writes states above 24 with a prefix letter; none are used here, but they are read past)
+      // Golly writes states above 24 with a prefix letter; none are used here, but they are read past
       prefix = ch;
       run = String(n === 1 && !run ? "" : n);
       continue;
@@ -252,7 +244,7 @@ export function formatRLE(cells: [number, number, number?][], opts: { rule?: str
     if (!r) rows.set(y - y0, (r = new Map()));
     r.set(x - x0, s ?? 1);
   }
-  // (states 1 to 24 are A to X, and past them a prefix: 25 is pA, as Golly writes them)
+  // states 1 to 24 are A to X, and past them a prefix: 25 is pA, as Golly writes them
   const live = (s: number) => {
     if (!multi) return "o";
     const k = Math.floor((s - 1) / 24);

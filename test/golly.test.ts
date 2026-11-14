@@ -79,7 +79,7 @@ describe.skipIf(!here)("the engine against Golly's bgolly", () => {
     }, 60_000);
 
   it("a MAP rule that is not isotropic, read the way Golly reads it", () => {
-    // (born on 3 unless the east neighbour lives, kept on 2 or 3 unless the north-west one does)
+    // born on 3 unless the east neighbour lives, kept on 2 or 3 unless the north-west one does
     const table = Uint8Array.from({ length: 512 }, (_, x) => {
       let n = 0;
       for (let m = x & 0x1ef; m; m &= m - 1) n++;

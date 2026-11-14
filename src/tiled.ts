@@ -1,11 +1,8 @@
-// sim/life/tiled: a Life-like cellular automaton on an unbounded plane of 32 by 32 tiles, each row of a tile one 32-bit word, a generation
-// computed 32 cells at a time by adding the eight neighbours' bits (a bit-sliced adder) and reading any Life-like rule
-// off the sum. Only tiles with live cells or a live edge beside them are computed, and a tile whose neighbourhood did
-// not change last generation is not computed at all. Every cell keeps the colour it was drawn or born in (a birth takes
-// the average of its parents', as it always has here), the generation it was born in (its age) and how many generations
-// it has lived before (its heat), so a step touches only the cells that are born or die. No React, no DOM: it runs in
-// the page, in tests and headless. The square lattice only; other lattices step with lattice/sparse-ca.ts. With a
-// family (Golly's History or Super, ./super.ts), every cell also keeps a state, moved on as Golly moves it.
+// LifeWorld: a Life-like automaton on an unbounded plane of 32 by 32 tiles, one 32-bit word a row. A generation adds
+// the eight neighbours' bits 32 cells at a time and reads the rule off the sum; only tiles with live cells, or beside a
+// live edge, are computed, and one whose neighbourhood did not change is skipped. Each cell keeps the colour it was
+// drawn or born in (a birth takes its parents' average), the generation it was born in and how long it has lived, so a
+// step touches only the cells born or dying. Under History or Super (super.ts) each cell keeps a state as Golly does.
 
 import { nextState, restless, type Family } from "./super";
 
@@ -104,7 +101,7 @@ export class LifeWorld {
     this.table = rule.table ?? null;
     this.ruleName = rule.table ? rule.name : undefined;
     this.conway = !this.table && this.bMask === 1 << 3 && this.sMask === ((1 << 2) | (1 << 3));
-    // (a new rule can change what a quiet neighbourhood becomes)
+    // a new rule can change what a quiet neighbourhood becomes
     for (const t of this.tiles.values()) t.changed = true;
   }
 
@@ -240,7 +237,7 @@ export class LifeWorld {
       cy = y - ty * TILE,
       i = cy * TILE + cx;
     const was = (t.bits[cy] >>> cx) & 1;
-    // (in a family, a cell drawn alive is state 1 unless it already lives in another, and one erased is 0)
+    // in a family, a cell drawn alive is state 1 unless it already lives in another, and one erased is 0
     if (t.state) t.state[i] = color >= 0 ? (t.state[i] & 1 ? t.state[i] : 1) : 0;
     if (color >= 0) {
       t.color[i] = color;
@@ -274,7 +271,7 @@ export class LifeWorld {
   /** One generation. */
   step(): StepStats {
     const tiles = this.tiles;
-    // (the tiles to compute: every tile with a live cell, and an empty one beside a live edge)
+    // the tiles to compute: every tile with a live cell, and an empty one beside a live edge
     const work: Tile[] = [];
     const stamp = ++this.stamp;
     for (const t of tiles.values())
@@ -304,7 +301,7 @@ export class LifeWorld {
       if (bot >>> 31) this.ensure(t.tx + 1, t.ty + 1, work, stamp);
     }
 
-    // (each tile's next bits, from its own and its eight neighbours')
+    // each tile's next bits, from its own and its eight neighbours'
     const quiet = new Uint8Array(work.length);
     for (let w = 0; w < work.length; w++) {
       const t = work[w];
@@ -326,7 +323,7 @@ export class LifeWorld {
 
     if (this.family) this.stepStates(work, quiet);
 
-    // (births take their parents' colours, read before anything changes; deaths keep the generations they lived)
+    // births take their parents' colours, read before anything changes; deaths keep the generations they lived
     const g = this.generation + 1;
     let births = 0,
       deaths = 0;
@@ -356,7 +353,7 @@ export class LifeWorld {
       }
     }
 
-    // (the new generation)
+    // the new generation
     let pop = 0;
     for (let w = 0; w < work.length; w++) {
       const t = work[w];
@@ -378,11 +375,11 @@ export class LifeWorld {
       if (p) t.lastLive = g;
       pop += p;
     }
-    // (a tile outside the work did not step, so nothing in it changed; one empty for long goes)
+    // a tile outside the work did not step, so nothing in it changed; one empty for long goes
     for (const [k, t] of tiles) {
       if (t.mark !== stamp) t.changed = false;
       if (!t.pop && g - t.lastLive > this.keepEmpty) {
-        // (a tile of a family's dead marks, its history, its labels, is kept as long as they are there)
+        // a tile of a family's dead marks, its history, its labels, is kept as long as they are there
         if (t.state && t.state.some((c) => c !== 0)) t.lastLive = g;
         else {
           tiles.delete(k);
@@ -407,7 +404,7 @@ export class LifeWorld {
     const inWork = new Map<Tile, number>();
     for (let w = 0; w < work.length; w++) {
       inWork.set(work[w], w);
-      // (a quiet tile's next generation is the one it has)
+      // a quiet tile's next generation is the one it has
       if (quiet[w]) work[w].next.set(work[w].bits);
     }
     const look = new Map<Tile, Uint8Array>();
@@ -445,7 +442,7 @@ export class LifeWorld {
           }
       }
     }
-    // (every new state from the old ones, then all of them written)
+    // every new state from the old ones, then all of them written
     const out: [Tile, number, number][] = [];
     for (const [t, m] of look) {
       const st = t.state!;
@@ -547,8 +544,8 @@ export class LifeWorld {
         c2 = d,
         c3 = (d >>> 1) | (de << 31);
       if (table) {
-        // (a rule that is not totalistic: each cell with anything around it looked up by its neighbourhood, nw the
-        // highest bit and se the lowest, as Golly indexes it; nothing around is dead, as a rule without B0 has it)
+        // a rule that is not totalistic: each cell with anything around it looked up by its neighbourhood, nw the
+        // highest bit and se the lowest, as Golly indexes it; nothing around is dead, as a rule without B0 has it
         let any = a1 | a2 | a3 | b1 | m | b3 | c1 | c2 | c3,
           o = 0;
         while (any) {
@@ -561,7 +558,7 @@ export class LifeWorld {
         out[y] = o;
         continue;
       }
-      // (the eight bits of each column added: ones, twos, fours and eights)
+      // the eight bits of each column added: ones, twos, fours and eights
       const s1 = a1 ^ a2 ^ a3,
         k1 = (a1 & a2) | (a3 & (a1 ^ a2));
       const s2 = b1 ^ b3,
@@ -626,7 +623,7 @@ export class LifeWorld {
     return (Math.round(r / n) << 16) | (Math.round(gr / n) << 8) | Math.round(bl / n);
   }
 
-  /** Every live cell, in no particular order. */
+  /** Every live cell with its colour: tiles in the order they were made, each row by row. */
   *cells(): Generator<[number, number, number]> {
     for (const t of this.tiles.values()) {
       if (!t.pop) continue;
@@ -666,7 +663,7 @@ export class LifeWorld {
       y1 = -Infinity;
     for (const t of this.tiles.values()) {
       if (t.state) {
-        // (a family's dead marks count, as Golly fits them)
+        // a family's dead marks count, as Golly fits them
         for (let i = 0; i < TILE * TILE; i++) {
           if (!t.state[i]) continue;
           const gx = t.tx * TILE + (i % TILE),
@@ -695,7 +692,6 @@ export class LifeWorld {
     return x0 === Infinity ? null : { x0, y0, x1, y1 };
   }
 
-  /** The live cells in a box, as [x, y, colour] (for copying a selection, and for tests). */
   /** The live cells of the tiles a box touches: at least those in the box, exactly them when it is tile-aligned, and
    *  cheap however many there are (no cell is visited, only the tiles' counts). */
   popIn(x0: number, y0: number, x1: number, y1: number): number {
@@ -704,13 +700,14 @@ export class LifeWorld {
       tx1 = Math.floor(x1 / TILE),
       ty1 = Math.floor(y1 / TILE);
     let n = 0;
-    // (few tiles in the box: look each up; many: walk the world's tiles instead)
+    // few tiles in the box: look each up; many: walk the world's tiles instead
     if ((tx1 - tx0 + 1) * (ty1 - ty0 + 1) <= this.tiles.size * 2) {
       for (let ty = ty0; ty <= ty1; ty++) for (let tx = tx0; tx <= tx1; tx++) n += this.getTile(tx, ty)?.pop ?? 0;
     } else for (const t of this.tiles.values()) if (t.tx >= tx0 && t.tx <= tx1 && t.ty >= ty0 && t.ty <= ty1) n += t.pop;
     return n;
   }
 
+  /** The live cells in a box, both ends in it, as [x, y, colour]. */
   cellsIn(x0: number, y0: number, x1: number, y1: number): [number, number, number][] {
     const out: [number, number, number][] = [];
     for (const t of this.tilesIn(x0, y0, x1, y1)) {

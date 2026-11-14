@@ -32,9 +32,9 @@ describe("a rule as Golly writes it", () => {
   it("covers every shape of each count with its letters, once each", () => {
     for (let n = 1; n <= 7; n++) {
       const letters = HENSEL.slice(0, LETTERS[n]);
-      // (all of a count's letters are the count itself)
+      // all of a count's letters are the count itself
       expect(ok(`B${n}${letters}/S`).table, `B${n}`).toEqual(ok(`B${n}c/S`).table!.map((_, x) => (!(x & 0x10) && neighbours(x) === n ? 1 : 0)));
-      // (each letter its own shapes, none shared: they add up to the eight neighbours taken n at a time)
+      // each letter its own shapes, none shared: they add up to the eight neighbours taken n at a time
       let total = 0;
       const seen = new Uint8Array(512);
       for (const l of letters) {
@@ -56,7 +56,7 @@ describe("a rule as Golly writes it", () => {
       all = ok("B2cekain/S").table!,
       a = ok("B2a/S").table!;
     for (let x = 0; x < 512; x++) expect(minus[x]).toBe(all[x] && !a[x] ? 1 : 0);
-    // (2c two corners of one side, 2e two sides at a corner, 2i two opposite sides, 2n two opposite corners)
+    // 2c two corners of one side, 2e two sides at a corner, 2i two opposite sides, 2n two opposite corners
     const at = (r: string, x: number) => ok(r).table![x];
     expect(at("B2c/S", 0b000000101)).toBe(1);
     expect(at("B2e/S", 0b010001000)).toBe(1);
@@ -144,7 +144,7 @@ describe("the engines run a rule by its table", () => {
     }
     const ref: [number, number][] = [];
     for (let i = 0; i < N * N; i++) if (g[i]) ref.push([(i % N) - O, Math.floor(i / N) - O]);
-    // (the soup stays well inside the grid in 64 generations, so the two are the whole world)
+    // the soup stays well inside the grid in 64 generations, so the two are the whole world
     expect(live(w.cells())).toBe(live(ref));
     const h = new Hashlife(rule);
     h.load(soup(3));

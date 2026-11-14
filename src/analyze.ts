@@ -1,7 +1,6 @@
-// sim/life/analyze: what a pattern does, found by running it (tiled.ts): it stays still, oscillates with a period,
-// travels (a spaceship, its period and displacement), dies, settles after a while, or keeps growing. A gun is told by
-// its core coming back while its population climbs. For small patterns and selections; it builds a canonical key of
-// every generation it looks at.
+// What a pattern does, found by running it on a LifeWorld: it stays still, oscillates, travels (a spaceship, with its
+// period and displacement), dies, settles after a while, or grows. A gun is told by its core coming back while its
+// population climbs. Meant for small patterns: it keeps a key of every generation it looks at.
 
 import { LifeWorld, type Rule, CONWAY } from "./tiled";
 
@@ -60,7 +59,7 @@ export function analyze(cells: Cells, opts: { rule?: Rule; maxGen?: number; gunM
     }
     seen.set(s.key, { g, x0: s.x0, y0: s.y0 });
   }
-  // (a gun: the population climbs by the same amount every period)
+  // a gun: the population climbs by the same amount every period
   const maxP = opts.gunMaxPeriod ?? 200;
   const tail = pops.slice(Math.floor(pops.length / 2));
   for (let p = 1; p <= Math.min(maxP, Math.floor(tail.length / 3)); p++) {
@@ -85,7 +84,7 @@ export function settles(cells: Cells, maxGen: number, hold = 200, rule: Rule = C
     w.step();
     pops.push(w.population);
   }
-  // (the last change of population before the end, period 2 allowed for blinkers' phases)
+  // the last change of population before the end, period 2 allowed for blinkers' phases
   const end = pops.length - 1;
   let at = end;
   while (at > 0 && (pops[at - 1] === pops[end] || pops[at - 1] === pops[end - 1]) && (pops[at - 1] === pops[at] || pops[at - 1] === pops[Math.min(end, at + 1)])) at--;

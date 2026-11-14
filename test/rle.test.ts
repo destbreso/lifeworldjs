@@ -93,7 +93,7 @@ bo$14bo2$2o$bo7b2o$bobo5b2o$2b2o7$12b2o$3b2o7bo$2bobo8b3o$4bo10bo!`;
 
 describe("parseRLE and whitespace", () => {
   it("ignores spaces inside the body, as LifeWiki's files have them", () => {
-    // (honeyfarmgenerator.rle and p74honeyfarmhassler2.rle break their lines on a space)
+    // honeyfarmgenerator.rle and p74honeyfarmhassler2.rle break their lines on a space
     const p = parseRLE("x = 6, y = 2, rule = B3/S23\n2o 3b o$ 6o!");
     expect(p.cells.map(([x, y]) => [x, y])).toEqual([[0, 0], [1, 0], [5, 0], [0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1]]);
   });
@@ -104,7 +104,7 @@ describe("looksLikeRLE", () => {
   it("knows a pattern with its header, or its body alone as it is often shared", () => {
     expect(looksLikeRLE("x = 3, y = 3, rule = B3/S23\nbo$2bo$3o!")).toBe(true);
     expect(looksLikeRLE("#N Glider\nbo$2bo$3o!")).toBe(true);
-    // (a body cut short, with no "!", as a chat message cuts it)
+    // a body cut short, with no "!", as a chat message cuts it
     expect(looksLikeRLE("154b2o16b2o$153bo2bo14bo2bo$\n162bobo11bobo$163bo12bobo$177bo6$3b")).toBe(true);
   });
 
@@ -118,11 +118,11 @@ describe("looksLikeRLE", () => {
 
 describe("Golly's rules with marks", () => {
   it("keeps a History or Super rule's odd states alive and drops its even ones", () => {
-    // (A on, B history, C marked on, D marked off, E start on, F boundary)
+    // A on, B history, C marked on, D marked off, E start on, F boundary
     const p = parseRLE("x = 6, y = 1, rule = LifeHistory\nABCDEF!");
     expect(liveCells(p)).toEqual([[0, 0], [2, 0], [4, 0]]);
     expect(liveCells(parseRLE("x = 2, y = 1, rule = B36/S23History\nAB!"))).toEqual([[0, 0]]);
-    // (in a plain rule a state is the file's own, a colour on this site's boards, and every cell is alive)
+    // in a plain rule a state is the file's own, a colour on this site's boards, and every cell is alive
     expect(liveCells(parseRLE("x = 2, y = 1, rule = B3/S23\nAB!"))).toEqual([[0, 0], [1, 0]]);
   });
 

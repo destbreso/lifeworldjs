@@ -12,8 +12,8 @@ describe("popIn", () => {
   });
 });
 
-// The oracle: the Game of Life page's own stepper before the tiled engine (app/interactive/game-of-life/page.tsx,
-// stepSparse and mixColorHex), copied verbatim but for its age and heat maps, which the engine keeps another way.
+// The oracle: the sparse stepper destbreso.com's Game of Life used before this engine (stepSparse and mixColorHex),
+// copied as it was but for its age and heat maps, which the engine keeps another way.
 type CellMap = Map<string, string>;
 const ck = (r: number, c: number) => `${r},${c}`;
 function hexToRgb(hex: string) {
@@ -115,7 +115,7 @@ const RULES: Record<string, { birth: number[]; survival: number[] }> = {
 
 describe("tiled Life", () => {
   for (const [name, rule] of Object.entries(RULES)) {
-    it(`steps ${name} (${ruleString(rule)}) exactly as the page's sparse stepper did, colours and counts included`, () => {
+    it(`steps ${name} (${ruleString(rule)}) exactly as the sparse stepper did, colours and counts included`, () => {
       let ref = soup(name.length * 7919, -45, -40, 90, 80);
       const w = load(ref, rule);
       const B = new Set(rule.birth),
@@ -138,7 +138,7 @@ describe("tiled Life", () => {
     for (let g = 0; g < 4 * 300; g++) w.step();
     expect(w.population).toBe(5);
     expect(w.bounds()).toEqual({ x0: 300, y0: 300, x1: 302, y1: 302 });
-    // (the tiles it left behind empty are let go)
+    // the tiles it left behind empty are let go
     expect(w.tiles.size).toBeLessThan(40);
   });
 

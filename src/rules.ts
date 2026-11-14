@@ -1,10 +1,8 @@
-// sim/life/rules: a rule as Golly writes it, read into what the engines run (Golly 5.0's gollybase/liferules.cpp, the
-// Moore neighbourhood). A totalistic rule (B3/S23, its S/B form 23/3, or Life) is birth and survival counts, which the
-// engines add up fast; an isotropic non-totalistic rule in Hensel's notation (B2e3air/S1c23-knqy, each letter after a
-// count one shape of that many neighbours, a minus taking the letters after it away) or a MAP rule (any of the 512
-// neighbourhoods, in base64) is a table of 512: alive or dead next for each 3 by 3 neighbourhood, indexed as Golly
-// indexes it, nw n ne / w c e / sw s se from the highest bit to the lowest. Rules with B0, bounded grids, Generations and
-// other neighbourhoods are refused with the reason: the engines do not run them.
+// Rules as Golly writes them, read into what the engines run (after Golly 5.0's gollybase/liferules.cpp, the Moore
+// neighbourhood). A totalistic rule (B3/S23, 23/3, Life) is birth and survival counts; a rule in Hensel's notation
+// (B2e3air/S1c23-knqy) or a MAP rule is a table of 512, next for each 3 by 3 neighbourhood, indexed as Golly indexes
+// it, nw n ne / w c e / sw s se from the highest bit to the lowest. B0, bounded grids, Generations and other
+// neighbourhoods are refused with the reason.
 
 export interface ParsedRule {
   /** the counts of neighbours a birth or a survival can have (for a table, every count one of its shapes has) */
@@ -68,7 +66,7 @@ function readPart(part: string, table: Uint8Array, survival: boolean): string | 
     if (d < 0 || d > 8) return `"${part[i]}" is not a count of neighbours`;
     i++;
     const minus = part[i] === "-";
-    // (a count with no letters after it, or a minus, takes every shape; the letters after a minus are taken away)
+    // a count with no letters after it, or a minus, takes every shape; the letters after a minus are taken away
     if (minus || i >= part.length || !HENSEL.includes(part[i])) setCount(table, d, survival);
     if (minus) i++;
     while (i < part.length && HENSEL.includes(part[i])) {
@@ -106,7 +104,7 @@ export function mapOf(table: Uint8Array): string {
 
 const countsOf = (table: Uint8Array, survival: boolean) => [...new Set([...Array(512).keys()].filter((x) => table[x] && !!(x & CENTRE) === survival).map(count))].sort((a, b) => a - b);
 
-/** A rule as Golly writes it, without a History or Super suffix (sim/life/super.ts splits that off), or why not. */
+/** A rule as Golly writes it, without a History or Super suffix (super.ts splits that off), or why not. */
 export function parseRule(text: string): ParsedRule | { error: string } {
   const r = text.trim();
   if (!r) return { error: "no rule" };
@@ -135,7 +133,7 @@ export function parseRule(text: string): ParsedRule | { error: string } {
   if (err) return { error: err };
   if (table[0]) return { error: "a birth from no neighbours (B0) is not run here" };
   const name = `B${b}/S${s}`;
-  // (written without letters, it is totalistic: the counts alone, which the engines add up fast)
+  // written without letters, it is totalistic: the counts alone, which the engines add up fast
   if (!/[a-z]/.test(b + s)) return { birth: countsOf(table, false), survival: countsOf(table, true), name };
   return { birth: countsOf(table, false), survival: countsOf(table, true), table, name };
 }

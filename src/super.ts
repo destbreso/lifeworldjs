@@ -1,10 +1,8 @@
-// sim/life/super: Golly's History and Super rule families, a cell's next state exactly as Golly 5.0 computes it
-// (gollybase/superalgo.cpp, slowcalc, the Moore neighbourhood). A History or Super rule is a two-state rule whose cells
-// also carry a state that marks them: odd states are alive and count as neighbours, even ones are dead, and the base
-// rule alone decides life, but for state 6, a boundary that is never born and kills a live cell beside it. The states
-// keep a dead cell's history (2), marks drawn on the pattern (3, 4), its starting cells (5), and in Super two more trail
-// colours, cells that leave no trail, and labels that fade or cycle. Investigator, whose odd states need not be alive,
-// is not here.
+// Golly's History and Super families: a cell's next state as Golly 5.0 computes it (gollybase/superalgo.cpp, slowcalc,
+// the Moore neighbourhood). Odd states are alive and count as neighbours, even ones are dead, and the base rule alone
+// decides life, but for state 6, a boundary never born that kills a live cell beside it. The states keep a dead cell's
+// history (2), marks (3, 4), starting cells (5), and in Super two more trail colours, cells with no trail, and labels
+// that fade or cycle. Investigator, whose odd states need not be alive, is not here.
 
 export type Family = "History" | "Super";
 
@@ -35,7 +33,7 @@ export function nextState(family: Family, c: number, typeMask: number, alive: bo
   let result = c;
   let process = true;
   if (family === "History") {
-    // (beside a boundary a live cell dies, whatever the rule says)
+    // beside a boundary a live cell dies, whatever the rule says
     if (typeMask & (1 << 6)) {
       process = false;
       if (c === 1) result = 2;
@@ -67,7 +65,7 @@ export function nextState(family: Family, c: number, typeMask: number, alive: bo
       if (c === 4) result = 3;
       else if (c === 8) result = 7;
       else if (c !== 6) {
-        // (a birth takes its live neighbours' state when they agree, as Golly's rules for it say, else 1, or 13)
+        // a birth takes its live neighbours' state when they agree, as Golly's rules for it say, else 1, or 13
         result = 1;
         let calc = typeMask & ODD_9_TO_25;
         if ((typeMask & ALIVE_1_3_5_7) === 0 && single(calc)) result = onlyBit(calc);
@@ -101,7 +99,7 @@ export function nextState(family: Family, c: number, typeMask: number, alive: bo
  */
 export const restless = (family: Family, c: number) => family === "Super" && c >= 14 && (c & 1) === 0;
 
-/** Golly's default colour of each state, 0xRRGGBB (superalgo.cpp; state 0 is the board's own background). */
+/** Golly's default colour of each state, 0xRRGGBB (superalgo.cpp; state 0 is the background). */
 export const STATE_COLORS: Record<Family, number[]> = {
   History: [0x303030, 0x00ff00, 0x000080, 0xd8ffd8, 0xff0000, 0xffff00, 0x606060],
   Super: [

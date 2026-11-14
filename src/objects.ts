@@ -1,6 +1,5 @@
-// sim/life/objects: a board's live cells as separate objects, each a group of cells close enough to act on each other
-// within a generation or two (two cells apart or less), with its box. What the finder walks through on the Game of
-// Life's board; any Life-like simulation can use it.
+// A board's live cells as separate objects: groups of cells two apart or less, close enough to act on each other
+// within a generation or two, each with its box.
 
 export type ObjCell = [number, number];
 
@@ -19,7 +18,7 @@ export interface LifeObject {
 export function separate(cells: Iterable<ObjCell>, reach = 2): LifeObject[] {
   const list: ObjCell[] = [];
   const at = new Map<number, number>();
-  // (a key exact for coordinates within 2^20 of the origin, far wider than any board the colour engine holds)
+  // a key exact for coordinates within 2^20 of the origin, far wider than any board the colour engine holds
   const key = (x: number, y: number) => (x + 1_048_576) * 2_097_152 + (y + 1_048_576);
   for (const c of cells) {
     at.set(key(c[0], c[1]), list.length);
@@ -35,7 +34,7 @@ export function separate(cells: Iterable<ObjCell>, reach = 2): LifeObject[] {
     return i;
   };
   list.forEach(([x, y], i) => {
-    // (only the neighbours before this cell in reading order: each pair is joined once)
+    // only the neighbours before this cell in reading order: each pair is joined once
     for (let dy = -reach; dy <= 0; dy++)
       for (let dx = -reach; dx <= reach; dx++) {
         if (dy === 0 && dx >= 0) break;

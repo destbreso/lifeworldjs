@@ -13,7 +13,7 @@ describe("a cell's next state, as Golly's help describes each state", () => {
     expect(nextState("History", 3, m(0), false)).toBe(4);
     expect(nextState("History", 4, m(0, 1), true)).toBe(3);
     expect(nextState("History", 5, m(0), false)).toBe(4);
-    // (a survivor and a cell that stays dead keep their states)
+    // a survivor and a cell that stays dead keep their states
     expect(nextState("History", 5, m(0, 1), true)).toBe(5);
     expect(nextState("History", 4, m(0), false)).toBe(4);
   });
@@ -23,7 +23,7 @@ describe("a cell's next state, as Golly's help describes each state", () => {
     expect(nextState("History", 1, m(0, 1, 6), true)).toBe(2);
     expect(nextState("History", 3, m(0, 1, 6), true)).toBe(4);
     expect(nextState("History", 5, m(0, 1, 6), true)).toBe(4);
-    // (a dead cell beside it is still born as the rule says)
+    // a dead cell beside it is still born as the rule says
     expect(nextState("History", 0, m(0, 1, 6), true)).toBe(1);
   });
 
@@ -41,7 +41,7 @@ describe("a cell's next state, as Golly's help describes each state", () => {
     expect(nextState("Super", 0, m(0, 9, 11), true)).toBe(1);
     expect(nextState("Super", 0, m(0, 15, 17), true)).toBe(13);
     expect(nextState("Super", 0, m(0, 1, 15), true)).toBe(1);
-    // (a marked cell among no-trail ones of one state, and a no-trail boundary cell among trail ones of one state)
+    // a marked cell among no-trail ones of one state, and a no-trail boundary cell among trail ones of one state
     expect(nextState("Super", 0, m(0, 3, 15), true)).toBe(15);
     expect(nextState("Super", 0, m(0, 7, 9), true)).toBe(9);
   });
@@ -75,7 +75,7 @@ describe("a cell's next state, as Golly's help describes each state", () => {
 
 // ── The engine against a plain reading of Golly's step: every cell, every generation, from the states as they were ──
 
-// (wide enough that nothing of a 32 by 32 soup in its middle reaches its edge in 120 generations: a glider goes 30 cells)
+// wide enough that nothing of a 32 by 32 soup in its middle reaches its edge in 120 generations: a glider goes 30 cells
 const N = 160;
 function denseStep(g: Uint8Array, family: Family, rule: Rule): Uint8Array {
   const B = new Set(rule.birth),
@@ -144,7 +144,7 @@ describe("the engine steps a family's states as Golly does", () => {
             const before = g;
             g = denseStep(g, family, rule);
             w.step();
-            // (the counters: births and deaths are changes of life, a boundary's kills among them; marked cells are dead ones)
+            // the counters: births and deaths are changes of life, a boundary's kills among them; marked cells are dead ones
             let births = 0,
               deaths = 0,
               marked = 0;
@@ -160,7 +160,7 @@ describe("the engine steps a family's states as Golly does", () => {
             expect(diff, `${family} ${name} seed ${seed} generation ${gen} at ${diff % N},${(diff / N) | 0}`).toBe(-1);
             let live = 0;
             for (const s of g) live += s & 1;
-            // (every live cell is inside the grid the reference reads, so the two are the whole world)
+            // every live cell is inside the grid the reference reads, so the two are the whole world
             expect(w.population).toBe(live);
           }
         }
@@ -185,7 +185,7 @@ describe("the engine steps a family's states as Golly does", () => {
     const w = new LifeWorld();
     w.setFamily("History");
     w.setState(500, 500, 4);
-    // (a lone cell dies at once and leaves its history; a cell drawn and erased leaves nothing)
+    // a lone cell dies at once and leaves its history; a cell drawn and erased leaves nothing
     w.set(0, 0, 1);
     w.set(1000, 1000, 1);
     w.set(1000, 1000, -1);

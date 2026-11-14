@@ -1,9 +1,8 @@
-// sim/life/metapixel: Brice Due's OTCA metapixel (2006), a 2048 by 2048 Life pattern that behaves like one cell of any
-// Life-like rule, a meta generation every 35,328 generations, and the metafier that tiles it into a pattern run at the
-// meta level. Built as Golly's own script builds it: Scripts/Python/metafier.py (Dave Greene, 2006, after Brice Due's
-// slides at otcametapixel.blogspot.com; https://sourceforge.net/p/golly/code/ci/master/tree/Scripts/Python/metafier.py),
-// its subpatterns, placements and comments kept as they are there. metapixel.test.ts holds the ON cell to LifeWiki's
-// file and runs a metafied blinker and glider at the meta level. Loaded only when a metafied pattern is opened.
+// Brice Due's OTCA metapixel (2006): a 2048 by 2048 Life pattern that behaves as one cell of any Life-like rule, a
+// meta generation every 35,328 generations, and the metafier that tiles it into a pattern run at the meta level.
+// Built as Golly's own script builds it, Scripts/Python/metafier.py (Dave Greene, 2006, after Brice Due's slides at
+// otcametapixel.blogspot.com), its subpatterns, placements and comments kept as they are there:
+// https://sourceforge.net/p/golly/code/ci/master/tree/Scripts/Python/metafier.py
 
 import { Hashlife, type HNode } from "./hashlife";
 import { CONWAY, type Rule } from "./tiled";
@@ -750,7 +749,7 @@ function ruleBits(rule: Rule): number[] {
   const bits = (values: number[]) => {
     let rle = "b10$b10$b26$b10$b10$b26$b10$b10$b!";
     for (const v of values) {
-      // (because B and S values are highest at the top)
+      // because B and S values are highest at the top
       const ind = 32 - v * 4;
       rle = rle.slice(0, ind) + "o" + rle.slice(ind + 1);
     }
@@ -789,12 +788,12 @@ export function metafy(rows: number[][], rule: Rule = CONWAY): [number, number][
  * neighbour), made once for each neighbourhood of ON, OFF and no tile, and the blocks are joined into the quadtree.
  */
 export function metafyInto(h: Hashlife, rows: number[][], rule: Rule = CONWAY) {
-  // (cleared first: every node is then made by this table, with an id of its own; nodes made before a clear would share
-  // ids with those made after it, and HashLife's bounds and collection go by id)
+  // cleared first: every node is then made by this table, with an id of its own; nodes made before a clear would share
+  // ids with those made after it, and HashLife's bounds and collection go by id
   h.clear();
   const tiles = metapixels(rule);
   const level = 11;
-  // (a quadtree node from cells inside one block, block-local)
+  // a quadtree node from cells inside one block, block-local
   const build = (cells: [number, number][], l: number, x0: number, y0: number): HNode => {
     if (!cells.length) return h.empty(l);
     if (l === 0) return h.alive;
@@ -829,7 +828,7 @@ export function metafyInto(h: Hashlife, rows: number[][], rule: Rule = CONWAY) {
     }
     return n;
   };
-  // (the root centred on (0, 0), as HashLife keeps it, wide enough for the blocks from -1 to the grid's far side)
+  // the root centred on (0, 0), as HashLife keeps it, wide enough for the blocks from -1 to the grid's far side
   let top = level + 1;
   while (2 ** (top - 1) < META_SIZE * (Math.max(cols, rows.length) + 1)) top++;
   const assemble = (l: number, x0: number, y0: number): HNode => {

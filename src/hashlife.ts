@@ -1,8 +1,7 @@
-// sim/life/hashlife: Bill Gosper's Hashlife, for Life-like rules. The plane is a quadtree whose nodes are made once
-// each (the same square of cells is the same node wherever and whenever it appears), and a node remembers what its
-// centre becomes 2^j generations on. A pattern that repeats in space or time is then stepped in leaps: thousands or
-// millions of generations at once. No colours: a cell is alive or not. tiled.ts is the engine for everything else;
-// hashlife.test.ts holds this one to it, cell for cell.
+// Hashlife: Gosper's HashLife for Life-like rules. The plane is a quadtree whose nodes are made once each (the same
+// square of cells is the same node wherever and whenever it appears), and a node remembers what its centre becomes
+// 2^j generations on, so a pattern that repeats in space or time is stepped thousands or millions of generations at
+// once. A cell is alive or not: no colours, no states. The tests hold it to LifeWorld, cell for cell.
 
 import type { Rule } from "./tiled";
 
@@ -54,7 +53,7 @@ export class Hashlife {
     this.bMask = [...rule.birth].reduce((m, n) => (n >= 1 && n <= 8 ? m | (1 << n) : m), 0);
     this.sMask = [...rule.survival].reduce((m, n) => (n >= 0 && n <= 8 ? m | (1 << n) : m), 0);
     this.ruleTable = rule.table ?? null;
-    // (every remembered future was under the old rule)
+    // every remembered future was under the old rule
     this.forget();
   }
 
@@ -252,7 +251,7 @@ export class Hashlife {
 
   /** a 4x4 node's centre one generation on */
   private base(n: HNode): HNode {
-    // (the 16 cells as bits, row by row from the top-left)
+    // the 16 cells as bits, row by row from the top-left
     let bits = 0;
     const quad = (q: HNode, ox: number, oy: number) => {
       if (q.nw.pop) bits |= 1 << (oy * 4 + ox);
@@ -303,7 +302,7 @@ export class Hashlife {
         n20 = n.sw,
         n21 = this.node(n.sw.ne, n.se.nw, n.sw.se, n.se.sw),
         n22 = n.se;
-      // (the whole leap in two halves; or, a shorter leap, the first half only centres and the second leaps)
+      // the whole leap in two halves; or, a shorter leap, the first half only centres and the second leaps
       const full = j === k - 2;
       const a = (m: HNode) => (full ? this.successor(m, k - 3) : this.centre(m));
       const c00 = a(n00),
@@ -329,8 +328,8 @@ export class Hashlife {
 
   /** Steps the plane 2^j generations. */
   step(j = 0) {
-    // (room around the pattern, so the centre after the leap holds all of it: two levels more than the leap, and an
-    // empty border)
+    // room around the pattern, so the centre after the leap holds all of it: two levels more than the leap, and an
+    // empty border
     let r = this.root;
     while (r.level < j + 3) r = this.expand(r);
     while (!this.bordersEmpty(r)) r = this.expand(r);
@@ -355,8 +354,8 @@ export class Hashlife {
   collect() {
     const level = this.root.level;
     const half = 2 ** (level - 1);
-    // (cheapest to rebuild: the cells, when they are few; else the tree, node by node. They are a new array, used as
-    // they are: spread into a push, hundreds of thousands of them overflowed the stack)
+    // cheapest to rebuild: the cells, when they are few; else the tree, node by node. They are a new array, used as
+    // they are: spread into a push, hundreds of thousands of them overflowed the stack
     const cells = this.root.pop <= 2_000_000 ? this.cells() : null;
     if (cells) {
       const g = this.generation;
@@ -371,7 +370,7 @@ export class Hashlife {
     this.table.clear();
     this.empties = [this.dead];
     this.nextId = 2;
-    // (each node copied once: the tree shares its subtrees, and copying them each time they appear would never end)
+    // each node copied once: the tree shares its subtrees, and copying them each time they appear would never end
     const done = new Map<number, HNode>();
     const copy = (n: HNode): HNode => {
       if (n.level === 0) return n;

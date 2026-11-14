@@ -16,14 +16,14 @@ const pairs = (xy: number[]) => Array.from({ length: xy.length / 2 }, (_, i) => 
 
 describe("the OTCA metapixel, as Golly's metafier builds it", () => {
   it("is LifeWiki's metapixel: its ON cell with no rule programmed, 404 generations on, but for the phase adjuster metafier.py changed", () => {
-    // (LifeWiki's file is a metapixel switched on, its rule table's eaters all broken, at that generation; the third
-    // phase adjuster, placed at (269, 2037) turned, was "a different shape in the original metacell", the script says)
+    // LifeWiki's file is a metapixel switched on, its rule table's eaters all broken, at that generation; the third
+    // phase adjuster, placed at (269, 2037) turned, was "a different shape in the original metacell", the script says
     const h = new Hashlife();
     h.load(pairs(metapixels({ birth: [], survival: [] }).on));
     leapTo(h, 404);
     const key = ([x, y]: [number, number]) => `${x},${y}`;
     const adjuster = ([x, y]: [number, number]) => x >= 192 && x <= 287 && y >= 1984 && y <= 2047;
-    // (the file's corner is the cell's own corner tub, at (-5, -5))
+    // the file's corner is the cell's own corner tub, at (-5, -5)
     const wiki = parseRLE(readFileSync("test/fixtures/otcametapixel.rle", "utf8")).cells.map(([x, y]) => [x - 5, y - 5] as [number, number]);
     const ours = h.cells();
     expect(new Set(ours.filter((c) => !adjuster(c)).map(key))).toEqual(new Set(wiki.filter((c) => !adjuster(c)).map(key)));
@@ -43,7 +43,7 @@ describe("the OTCA metapixel, as Golly's metafier builds it", () => {
       const key = (h: Hashlife) => new Set(h.cells().map(([x, y]) => `${x},${y}`));
       expect(b.population).toBe(a.population);
       expect(key(b)).toEqual(key(a));
-      // (HashLife's bounds go by node id: they were wrong while nodes made before a clear shared ids with later ones)
+      // HashLife's bounds go by node id: they were wrong while nodes made before a clear shared ids with later ones
       expect(b.bounds()).toEqual(a.bounds());
     }
   });

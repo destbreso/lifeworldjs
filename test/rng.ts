@@ -1,19 +1,10 @@
-/* ══════════════════════════════════════════════════════════
-   sim/rng: seeded pseudo-random number generators.
-
-   splitmix32 is the canonical generator for the sim core (it is the
-   SAME algorithm terrain-lab's noise has always used, so the noise
-   move in sim/noise.ts stays bit-identical).
-
-   Red line (docs/SIM-CORE-ROADMAP.md §4): never swap the generator
-   under an existing seed. Seeds are visually load-bearing in shipped
-   sims; this module is for NEW code and deliberate, flagged reseeds.
-   ══════════════════════════════════════════════════════════ */
+/* Seeded random numbers for the tests: the same seed, the same soups. A seed's stream must never change, or every
+   test built on it changes with it. */
 
 /** A generator returning floats in [0, 1). */
 export type Rng = () => number;
 
-/** splitmix32: fast, well-mixed 32-bit generator. Canonical here. */
+/** splitmix32: a fast, well mixed 32-bit generator. */
 export function splitmix32(seed: number): Rng {
   let a = seed | 0;
   return () => {

@@ -1,8 +1,8 @@
-// sim/life/render: a tiled Life world (tiled.ts) as a picture, at any zoom. Close up, every visible cell is one pixel
-// of a small image the canvas scales up (crisp, no smoothing) with a dark line between cells; zoomed out past one
-// pixel a cell, every screen pixel adds up the cells that fall in it (a whole tile at once when a tile is smaller than
-// a pixel) and shows their mean colour, brighter the denser they are, so a lone glider far out is still a dot. The
-// same picture fills the minimap. paintLife builds the pixels (no DOM, tested); drawLife puts them on a canvas.
+// A LifeWorld or a Hashlife as a picture, at any zoom. Close up, each visible cell is a pixel of a small image the
+// canvas scales up without smoothing, with a dark line between cells; zoomed out, each screen pixel adds up the cells
+// in it (a whole tile at once when a tile is smaller than a pixel) and shows their mean colour, brighter the denser,
+// so a lone glider far out is still a dot. paintLife and paintHash build the pixels with no DOM; drawLife and drawHash
+// put them on a canvas.
 
 import { TILE, type LifeWorld, type Tile } from "./tiled";
 import type { Hashlife } from "./hashlife";
@@ -84,7 +84,7 @@ function tilesIn(w: LifeWorld, x0: number, y0: number, x1: number, y1: number, h
     ty0 = Math.floor(y0 / TILE),
     tx1 = Math.floor(x1 / TILE),
     ty1 = Math.floor(y1 / TILE);
-  // (few tiles in view: look each up; many: walk the world's tiles instead)
+  // few tiles in view: look each up; many: walk the world's tiles instead
   if ((tx1 - tx0 + 1) * (ty1 - ty0 + 1) <= w.tiles.size * 2) {
     for (let ty = ty0; ty <= ty1; ty++)
       for (let tx = tx0; tx <= tx1; tx++) {
@@ -126,7 +126,7 @@ export function paintLife(w: LifeWorld, view: LifeView, W: number, H: number, op
           continue;
         }
         if (t.state) {
-          // (a family's world: every cell with a state, dead marks included)
+          // a family's world: every cell with a state, dead marks included
           for (let x = 0; x < TILE; x++) {
             const i = y * TILE + x,
               st = t.state[i];
@@ -172,7 +172,7 @@ export function paintLife(w: LifeWorld, view: LifeView, W: number, H: number, op
   const tileSmall = TILE * s < 1.5;
   for (const t of tiles) {
     if (t.state && !heat) {
-      // (a family's world: every cell with a state counts, in its state's colour)
+      // a family's world: every cell with a state counts, in its state's colour
       let n = 0,
         c = 0;
       for (let i = 0; i < TILE * TILE; i++) {
@@ -190,7 +190,7 @@ export function paintLife(w: LifeWorld, view: LifeView, W: number, H: number, op
       continue;
     }
     if (tileSmall && !heat && opts.mode === "color") {
-      // (a tile smaller than a pixel: its population, in the colour of one of its cells)
+      // a tile smaller than a pixel: its population, in the colour of one of its cells
       let c = 0;
       for (let y = 0; y < TILE && !c; y++) if (t.bits[y]) c = t.color[y * TILE + (31 - Math.clz32(t.bits[y] & -t.bits[y]))];
       add(Math.floor((t.tx * TILE + TILE / 2 - view.x) * s), Math.floor((t.ty * TILE + TILE / 2 - view.y) * s), t.pop, opts.ink ? opts.ink(c) : c);
@@ -218,7 +218,7 @@ export function paintLife(w: LifeWorld, view: LifeView, W: number, H: number, op
   for (let i = 0; i < n; i++) {
     const k = count[i];
     if (!k) continue;
-    // (a lone cell still shows; a pixel full of cells shows at its full colour)
+    // a lone cell still shows; a pixel full of cells shows at its full colour
     const a = 0.45 + 0.55 * Math.sqrt(Math.min(1, k / perPixel));
     const o = i * 4;
     data[o] = (r[i] / k) * a + br * (1 - a);
@@ -267,7 +267,7 @@ export function paintHash(h: Hashlife, view: LifeView, W: number, H: number, opt
   const n = W * H,
     count = new Float64Array(n);
   const s = view.scale;
-  // (nodes no bigger than a pixel: the largest power of two that fits in one)
+  // nodes no bigger than a pixel: the largest power of two that fits in one
   const min = 2 ** Math.floor(Math.log2(1 / s));
   h.visit({ x0: view.x, y0: view.y, x1: view.x + W / s, y1: view.y + H / s }, min, (x, y, size, pop) => {
     const px = Math.floor((x + size / 2 - view.x) * s),
@@ -329,7 +329,7 @@ export function drawPainted(ctx: CanvasRenderingContext2D, p: Painted, view: Lif
   cc.putImageData(img, 0, 0);
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(c as CanvasImageSource, 0, 0, p.w, p.h, p.left, p.top, p.w * p.px, p.h * p.px);
-  // (the line between cells: the background's gap from 4 pixels a cell, the grid's colour when it is on)
+  // the line between cells: the background's gap from 4 pixels a cell, the grid's colour when it is on
   const s = view.scale;
   if (s >= 4) {
     const bg = opts.background;
