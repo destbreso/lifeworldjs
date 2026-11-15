@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { baseRule, formatRLE, liveCells, looksLikeRLE, parseRLE, patternToRle, rleToPattern } from "../src/rle";
+import { baseRule, formatRLE, liveCells, looksLikeRLE, parseRLE, patternToRle, rleToPattern } from "../src/features/rle";
 
 const GLIDER = [
   [0, 1, 0],

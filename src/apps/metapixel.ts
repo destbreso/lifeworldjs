@@ -4,8 +4,8 @@
 // otcametapixel.blogspot.com), its subpatterns, placements and comments kept as they are there:
 // https://sourceforge.net/p/golly/code/ci/master/tree/Scripts/Python/metafier.py
 
-import { Hashlife, type HNode } from "./hashlife";
-import { CONWAY, type Rule } from "./tiled";
+import { Hashlife, type HNode } from "../core/hashlife";
+import { CONWAY, type Rule } from "../core/tiled";
 
 /** a metapixel's side, in cells */
 export const META_SIZE = 2048;

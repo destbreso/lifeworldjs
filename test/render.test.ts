@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { LifeWorld } from "../src/tiled";
-import { paintLife } from "../src/render";
-import { STATE_COLORS } from "../src/super";
+import { LifeWorld } from "../src/core/tiled";
+import { paintLife } from "../src/features/render";
+import { STATE_COLORS } from "../src/core/super";
 
 const BG = 0x050a05;
 const rgb = (p: { data: Uint8ClampedArray; w: number }, x: number, y: number) => {

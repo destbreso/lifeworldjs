@@ -2,9 +2,9 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { splitmix32 } from "./rng";
-import { parseRLE } from "../src/rle";
-import { LifeWorld } from "../src/tiled";
-import { Hashlife } from "../src/hashlife";
+import { parseRLE } from "../src/features/rle";
+import { LifeWorld } from "../src/core/tiled";
+import { Hashlife } from "../src/core/hashlife";
 
 const key = (cells: Iterable<[number, number]>) => [...cells].map(([x, y]) => `${x},${y}`).sort();
 function soup(seed: number, w: number, h: number, d = 0.35): [number, number][] {

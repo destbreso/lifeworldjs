@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { separate, type ObjCell } from "../src/objects";
+import { separate, type ObjCell } from "../src/features/objects";
 
 const block = (x: number, y: number): ObjCell[] => [[x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]];
 

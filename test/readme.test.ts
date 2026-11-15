@@ -3,16 +3,14 @@ import {
   CONWAY,
   Hashlife,
   LifeWorld,
-  META_PERIOD,
   analyze,
   liveCells,
-  metafyInto,
-  metaStates,
   paintLife,
   parseRLE,
   parseRule,
   separate,
 } from "../src/index";
+import { META_PERIOD, metafyInto, metaStates } from "../src/apps/metapixel";
 
 // The README's examples, run: what each prints is what the README says it prints.
 describe("the README's examples", () => {

@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { parseRLE } from "../src/rle";
-import { Hashlife } from "../src/hashlife";
-import { META_PERIOD, metafy, metafyInto, metapixels, metaStates } from "../src/metapixel";
+import { parseRLE } from "../src/features/rle";
+import { Hashlife } from "../src/core/hashlife";
+import { META_PERIOD, metafy, metafyInto, metapixels, metaStates } from "../src/apps/metapixel";
 
 /** HashLife to a generation, a leap for each binary digit of the distance */
 const leapTo = (h: Hashlife, g: number) => {

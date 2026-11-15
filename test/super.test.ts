@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { familyRule, FAMILY_STATES, nextState, splitFamily, type Family } from "../src/super";
-import { LifeWorld, type Rule } from "../src/tiled";
+import { familyRule, FAMILY_STATES, nextState, splitFamily, type Family } from "../src/core/super";
+import { LifeWorld, type Rule } from "../src/core/tiled";
 import { splitmix32 } from "./rng";
 
 const m = (...s: number[]) => s.reduce((a, x) => a | (1 << x), 0);

@@ -8,6 +8,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./metapixel": {
+      "types": "./dist/apps/metapixel.d.ts",
+      "import": "./dist/apps/metapixel.js",
+      "require": "./dist/apps/metapixel.cjs"
     }
   },
   "main": "./dist/index.cjs",

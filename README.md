@@ -143,7 +143,7 @@ console.log(separate([[0, 0], [1, 0], [0, 1], [10, 10], [11, 10]]).map((o) => o.
 A glider of OTCA metapixels, each metapixel a 2048 by 2048 pattern that behaves as one cell. A meta generation takes 35,328 generations, and the first only sends each metapixel's first signals, so after five the glider has moved one metapixel down and to the right. The board has some 775,000 live cells and is built straight into HashLife's tree, never listed.
 
 ```ts
-import { META_PERIOD, metafyInto, metaStates } from "lifeworldjs";
+import { META_PERIOD, metafyInto, metaStates } from "lifeworldjs/metapixel";
 
 const h = new Hashlife(CONWAY);
 metafyInto(h, [
@@ -178,6 +178,10 @@ drawLife(ctx, w, { x: -2, y: -2, scale: 8 }, 640, 480, { mode: "heat", backgroun
 ```
 
 Zoomed out (a scale below 1), each screen pixel shows the mean colour of the cells in it, brighter the denser they are, so a lone glider far out is still a dot.
+
+## How it is organised
+
+The engine is `src/core`: LifeWorld, Hashlife, the rules and Golly's families. Layers that any program running the engine can use are `src/features`: RLE files, the painter, what a pattern does and the objects on a board. Applications built on the engine that more than one program can reuse are `src/apps`: the OTCA metapixel. `import ... from "lifeworldjs"` gives the engine and its layers; an application comes from its own path, `lifeworldjs/metapixel`.
 
 ## API
 
@@ -237,7 +241,7 @@ Also: `TILE` (32), `LIMIT`, `DEFAULT_COLOR` (0x22d3ee, a birth with no parent), 
 - `paintHash(hashlife, view, W, H, { background, color })`: the same for a Hashlife, in one colour.
 - `drawLife`, `drawHash`, `drawPainted`: the same onto a `CanvasRenderingContext2D`, crisp close up with a line between cells (`grid` adds it from 6 pixels a cell), and a `scratch` object kept between frames.
 
-### Metapixels
+### Metapixels (`lifeworldjs/metapixel`)
 
 - `metafy(rows, rule?)`: a pattern of 1s and 0s (rows, y down) as the cells of a metapixel for each, metapixel (i, j) at (2048 i, 2048 j). `metafyInto(hashlife, rows, rule?)`: the same board built straight into a Hashlife.
 - `metaStates(count, cols, rows)`: each metapixel ON or OFF, read off its face with a counting function such as `box => hashlife.count(box)`; `faceOf(i, j)`, `metapixels(rule?)`, `META_SIZE` (2048), `META_PERIOD` (35,328).

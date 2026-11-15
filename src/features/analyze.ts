@@ -2,7 +2,7 @@
 // period and displacement), dies, settles after a while, or grows. A gun is told by its core coming back while its
 // population climbs. Meant for small patterns: it keeps a key of every generation it looks at.
 
-import { LifeWorld, type Rule, CONWAY } from "./tiled";
+import { LifeWorld, type Rule, CONWAY } from "../core/tiled";
 
 export type Behavior =
   | { kind: "still" }

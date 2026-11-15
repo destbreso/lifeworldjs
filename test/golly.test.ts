@@ -6,11 +6,11 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { formatRLE, parseRLE } from "../src/rle";
+import { formatRLE, parseRLE } from "../src/features/rle";
 import { splitmix32 } from "./rng";
-import { splitFamily } from "../src/super";
-import { mapOf, parseRule, type ParsedRule } from "../src/rules";
-import { LifeWorld, TILE } from "../src/tiled";
+import { splitFamily } from "../src/core/super";
+import { mapOf, parseRule, type ParsedRule } from "../src/core/rules";
+import { LifeWorld, TILE } from "../src/core/tiled";
 
 const BGOLLY = process.env.GOLLY_BGOLLY ?? "/Applications/golly-5.0-mac/bgolly";
 const here = existsSync(BGOLLY);

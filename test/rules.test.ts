@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { HENSEL, mapOf, parseRule, type ParsedRule } from "../src/rules";
-import { LifeWorld } from "../src/tiled";
-import { Hashlife } from "../src/hashlife";
+import { HENSEL, mapOf, parseRule, type ParsedRule } from "../src/core/rules";
+import { LifeWorld } from "../src/core/tiled";
+import { Hashlife } from "../src/core/hashlife";
 import { splitmix32 } from "./rng";
 
 const ok = (r: string) => {

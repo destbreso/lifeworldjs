@@ -1,9 +1,9 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: { index: "src/index.ts", "apps/metapixel": "src/apps/metapixel.ts" },
   format: ["esm", "cjs"],
-  dts: { entry: ["src/index.ts"] },
+  dts: { entry: { index: "src/index.ts", "apps/metapixel": "src/apps/metapixel.ts" } },
   clean: true,
   sourcemap: false,
   target: "es2022",

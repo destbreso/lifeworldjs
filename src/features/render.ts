@@ -4,9 +4,9 @@
 // so a lone glider far out is still a dot. paintLife and paintHash build the pixels with no DOM; drawLife and drawHash
 // put them on a canvas.
 
-import { TILE, type LifeWorld, type Tile } from "./tiled";
-import type { Hashlife } from "./hashlife";
-import { STATE_COLORS } from "./super";
+import { TILE, type LifeWorld, type Tile } from "../core/tiled";
+import type { Hashlife } from "../core/hashlife";
+import { STATE_COLORS } from "../core/super";
 
 export type ColorMode = "color" | "age" | "heat";
 

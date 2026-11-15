@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { splitmix32 } from "./rng";
-import { CONWAY, LifeWorld, TILE, ruleString } from "../src/tiled";
+import { CONWAY, LifeWorld, TILE, ruleString } from "../src/core/tiled";
 
 describe("popIn", () => {
   it("counts the live cells of the tiles a box touches: exactly in a tile-aligned box, at least those in any other", () => {
